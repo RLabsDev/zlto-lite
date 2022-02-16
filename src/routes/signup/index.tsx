@@ -5,7 +5,7 @@ import { route } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { useStore } from '../../store';
 
-const Home: FunctionalComponent = () => {
+const Signup: FunctionalComponent = () => {
     const ZLTO_API = 'https://api.zlto.co';
 
     const [token, setToken] = useStore.token();
@@ -13,7 +13,7 @@ const Home: FunctionalComponent = () => {
     const [password, setPassword] = useState(null);
 
     async function performAuth() {
-        const res = await fetch(`${ZLTO_API}/dl_login_account/`, {
+        const res = await fetch(`${ZLTO_API}/dl_create_account/`, {
             method: 'POST',
             body: JSON.stringify({
                 username,
@@ -30,32 +30,24 @@ const Home: FunctionalComponent = () => {
         if (!!res) {
             const data = await res.json();
             console.log('@@@@@  ~ file: index.tsx ~ line 29 ~ session ~ data', data)
-            setToken(data.token);
+            setToken(data.access_token);
             route('earn');
         }
     };
 
     return (
         <div class={style.home}>
-            <h1>Login</h1>
+            <h1>Create account</h1>
             <label for="fname">Username</label>
             <input onChange={e => setUsername(e.target.value)} type="text" id="fname" name="firstname" placeholder="Your name.."/>
 
             <label for="lname">Password</label>
             <input onChange={e=> setPassword(e.target.value)} type="password" id="lname" name="lastname" placeholder="Your last name.."/>
 
-            <input onClick={performAuth} type="submit" value="Login"/>
+            <input onClick={performAuth} type="submit" value="Signup"/>
 
-            <a
-                class={style.createAccount}
-                onClick={() => route('signup')}
-            >
-                New to Zlto?
-                {' '}
-                Create account
-            </a>
         </div>
     );
 };
 
-export default Home;
+export default Signup;

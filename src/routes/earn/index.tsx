@@ -10,23 +10,26 @@ const ZLTO_API = 'https://api.zlto.co';
 const Earn: FunctionalComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useStore.token();
-    const [surveys, setSurveys] = useStore.surveys();
-    const [surveyInFocus, setSurveyInFocus] = useStore.surveyInFocus();
+    const [tasks, setTasks] = useStore.tasks();
+    const [taskInFocus, setTaskInFocus] = useStore.taskInFocus();
 
-    const survey = !!surveys ? surveys[0] : {} as any; // hardcoded for now, maybe new endpoint created to fetch one daily survey
-    console.log('@@@@@  ~ file: index.tsx ~ line 15 ~ survey', survey)
+    // const survey = !!surveys ? surveys[2] : {} as any; // hardcoded for now, maybe new endpoint created to fetch one daily survey
+    // console.log('@@@@@  ~ file: index.tsx ~ line 15 ~ survey', survey)
 
     useEffect(() => {
-        getSurveys();
+        getTasks();
       }, []);
 
-    async function getSurveys() {
+    async function getTasks() {
         try {
             setIsLoading(true);
-            const res = await fetch(`${ZLTO_API}/partner/earn/surveys`, {
+
+    console.log('@@@@@  ~ file: index.tsx ~ line 13 ~ token', token)
+
+            const res = await fetch(`${ZLTO_API}/dl_get_tasks/`, {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Token ${token}`,
                 }
             });
 
@@ -36,21 +39,25 @@ const Earn: FunctionalComponent = () => {
                 const data = await res.json();
                 console.log('@@@@@  ~ file: index.tsx ~ line 29 ~ session ~ data', data)
 
-                setSurveys(data.my_surveys);
+                setTasks([
+                    ...data.my_tasks,
+                    ...(data.others || []),
+                ]);
             }
 
         } catch(e) {
-            route('home');
+            console.log('Error: ', e)
+            route('');
         }
 
         setIsLoading(false);
     };
 
-    async function getSurveyDetails() {
-        const res = await fetch(`${ZLTO_API}/earn/survey/${survey.id}/`, {
+    async function getTaskDetails(task) {
+        const res = await fetch(`${ZLTO_API}/dl_get_task_details/${task.id}/`, {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Token ${token}`,
             }
         });
 
@@ -60,35 +67,36 @@ const Earn: FunctionalComponent = () => {
             const data = await res.json();
             console.log('@@@@@  ~ file: index.tsx ~ line 29 ~ session ~ data', data)
 
-            setSurveyInFocus(data);
+            setTaskInFocus(data);
+            route('submit-task')
         } 
     };
 
     return (
         <div class={style.home}>
-            <h1 class={style.title}>Survey of the day</h1>
-
-                
+            <h1 class={style.title}>Earn</h1>
             <div class={style.grid}>
-                {isLoading && (!surveyInFocus || surveyInFocus === {}) && <h3>Loading...</h3>}
+                {isLoading && (!taskInFocus || !taskInFocus.details) && <h3>Loading...</h3>}
 
-                {!!survey &&
-                    <div class={style.card} onClick={getSurveyDetails}>
-                        <img src={survey.banner_pic} alt={survey.title} style="width:100%"/>
+                {tasks.length === 0 && <h3>No tasks at the moment - please check with your Zlto partner for more information.</h3>}
+
+                {tasks.map(task => (
+                    <div class={style.card} onClick={() => getTaskDetails(task)}>
+                        <img src={task.banner_pic} alt={task.title} style="width:100%"/>
                         <div class={style.container}>
-                            <h4><b>{survey.title}</b></h4>
-                            <p>🎁 Reward: {survey.amount} Zlto </p>
+                            <h4><b>{task.title}</b></h4>
+                            <p>🎁 Reward: {task.amount} Zlto </p>
                         </div>
                     </div>
+                    ))
                 }
 
-                {!!surveyInFocus && surveyInFocus !== {} &&
+                {!!taskInFocus && !taskInFocus.details &&
                     <div>
-                        {get(surveyInFocus, 'questions', []).map(obj => (
+                        {get(taskInFocus, 'questions', []).map(obj => (
                             <h1>{obj.title}</h1>
                         ))}
                     </div>
-                
                 }
             </div>
         </div>

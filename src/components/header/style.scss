@@ -1,3 +1,5 @@
+$zlto-yellow: #FCBD09;
+
 .header {
 	position: fixed;
 	left: 0;
@@ -5,7 +7,7 @@
 	width: 100%;
 	height: 56px;
 	padding: 0;
-	background: #FCBD09;
+	background: white;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 	z-index: 50;
 }
@@ -32,17 +34,20 @@
 	padding: 0 15px;
 	min-width: 50px;
 	text-align: center;
-	background: rgba(255,255,255,0);
+	background: transparent;
 	text-decoration: none;
-	color: #FFF;
 	will-change: background-color;
+	color: black;
+	font-size: 18px;
 }
 
 .header nav a:hover,
 .header nav a:active {
-	background: rgba(0,0,0,0.2);
+	color: $zlto-yellow;
+	background: transparent;
 }
 
 .header nav a.active {
-	background: rgba(0,0,0,0.4);
+	color: $zlto-yellow;
+	background: transparent;
 }

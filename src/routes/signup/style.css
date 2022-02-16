@@ -4,13 +4,6 @@
 	width: 100%;
 }
 
-.createAccount {
-	margin-top: 20px;
-	display: block;
-	color: cornflowerblue;
-	cursor: pointer;
-}
-
 input[type=text], input[type=password], select {
   width: 100%;
   padding: 12px 20px;
@@ -36,3 +29,4 @@ input[type=submit] {
 input[type=submit]:hover {
   background-color: #45a049;
 }
+
