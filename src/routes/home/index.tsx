@@ -9,6 +9,8 @@ const Home: FunctionalComponent = () => {
     const ZLTO_API = 'https://api.zlto.co';
 
     const [token, setToken] = useStore.token();
+    const [zltoBalance, setZltoBalance] = useStore.zltoBalance();
+
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
 
@@ -31,6 +33,19 @@ const Home: FunctionalComponent = () => {
             const data = await res.json();
             console.log('@@@@@  ~ file: index.tsx ~ line 29 ~ session ~ data', data)
             setToken(data.token);
+
+            const getAccountRes = await fetch(`${ZLTO_API}/dl_account_details/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${data.token}`,
+                }
+            });
+            const accountData = await getAccountRes.json();
+            console.log('@@@@@  ~ file: index.tsx ~ line 42 ~ performAuth ~ accountData', accountData);
+
+            setZltoBalance(accountData.balance);
+
             route('earn');
         }
     };
@@ -39,10 +54,10 @@ const Home: FunctionalComponent = () => {
         <div class={style.home}>
             <h1>Login</h1>
             <label for="fname">Username</label>
-            <input onChange={e => setUsername(e.target.value)} type="text" id="fname" name="firstname" placeholder="Your name.."/>
+            <input onChange={e => setUsername(e.target.value)} type="text" id="fname" name="firstname" placeholder="Username"/>
 
             <label for="lname">Password</label>
-            <input onChange={e=> setPassword(e.target.value)} type="password" id="lname" name="lastname" placeholder="Your last name.."/>
+            <input onChange={e=> setPassword(e.target.value)} type="password" id="lname" name="lastname" placeholder="Password"/>
 
             <input onClick={performAuth} type="submit" value="Login"/>
 

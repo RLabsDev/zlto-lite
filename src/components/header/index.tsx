@@ -6,12 +6,16 @@ import { useStore } from '../../store';
 
 const Header: FunctionalComponent = () => {
     const [token, setToken] = useStore.token();
+    const [zltoBalance, setZltoBalance] = useStore.zltoBalance();
 
     return (
         <header class={style.header}>
             <Link href={token === '' ? '/' : '/earn'}>
-                <h1>
-                    <img src='components/header/zlto_logo.png' height={60} />
+                <h1 class={style.balance}>
+                    {token === ''
+                        ?  <img src='assets/zlto_logo.png' height={60} />
+                        : `Balance: ${Math.round(zltoBalance)}`
+                    }
                 </h1>
             </Link>
             <nav>
@@ -29,10 +33,13 @@ const Header: FunctionalComponent = () => {
                 : (
                     <div>
                         <Link activeClassName={style.active} href="/earn">
-                            Earn
+                            💪 Earn
                         </Link>
                         <Link activeClassName={style.active} href="/store">
-                            Store
+                            🎁 Buy
+                        </Link>
+                        <Link activeClassName={style.active} href="/" onClick={() => setToken('')}>
+                            👋🏽 Logout
                         </Link>
                     </div>
                 )

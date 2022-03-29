@@ -51,7 +51,7 @@ const SubmitTask: FunctionalComponent = () => {
   };
 
   async function submitAnswers(payload) {
-    const res = await fetch(`${ZLTO_API}/dl_submit_task/`, {
+    const res = await fetch(`${ZLTO_API}/dl_submit_survey/`, {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
@@ -158,6 +158,13 @@ const SubmitTask: FunctionalComponent = () => {
                                   }
                                   <div>
                                       {(obj.question_type_verbose === 'Open-ended' || (['Paragraph'].includes(obj.answer_type_verbose))) && (
+                                          <input
+                                              onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
+                                              type="text"
+                                              placeholder={obj.title}
+                                          />
+                                      )}
+                                      {(obj.question_type_verbose === 'Date') && (
                                           <input
                                               onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
                                               type="text"

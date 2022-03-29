@@ -1,6 +1,6 @@
 {
-  "name": "zlto-lite",
-  "short_name": "zlto-lite",
+  "name": "Zlto Data Lite",
+  "short_name": "Zlto Lite",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

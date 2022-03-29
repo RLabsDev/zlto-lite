@@ -9,14 +9,16 @@ const Signup: FunctionalComponent = () => {
     const ZLTO_API = 'https://api.zlto.co';
 
     const [token, setToken] = useStore.token();
-    const [username, setUsername] = useState(null);
+    // const [username, setUsername] = useState(null);
+    const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
 
     async function performAuth() {
         const res = await fetch(`${ZLTO_API}/dl_create_account/`, {
             method: 'POST',
             body: JSON.stringify({
-                username,
+                // email,
+                username: email,
                 password
             }),
             headers: {
@@ -38,11 +40,11 @@ const Signup: FunctionalComponent = () => {
     return (
         <div class={style.home}>
             <h1>Create account</h1>
-            <label for="fname">Username</label>
-            <input onChange={e => setUsername(e.target.value)} type="text" id="fname" name="firstname" placeholder="Your name.."/>
+            <label for="fname">Email</label>
+            <input onChange={e => setEmail(e.target.value)} type="text" id="email" name="email" placeholder="Your email.."/>
 
             <label for="lname">Password</label>
-            <input onChange={e=> setPassword(e.target.value)} type="password" id="lname" name="lastname" placeholder="Your last name.."/>
+            <input onChange={e=> setPassword(e.target.value)} type="password" id="password" name="password" placeholder="Your password.."/>
 
             <input onClick={performAuth} type="submit" value="Signup"/>
 

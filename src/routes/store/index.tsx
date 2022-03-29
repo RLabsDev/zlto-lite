@@ -10,13 +10,11 @@ const ZLTO_API = 'https://api.zlto.co';
 const Store: FunctionalComponent = () => {
   const [token] = useStore.token();
   const [products, setProducts] = useStore.stores();
+  const [zltoBalance, setZltoBalance] = useStore.zltoBalance();
 
   console.log('@@@@@  ~ file: index.tsx ~ line 12 ~ products', products)
 
-//TODO: get client uuid from store, set during auth
-  const [clientId, setClientId] = useState('0a1ea692-59e9-4bd4-ae02-9efefaa2cf38');
   const [selectedProduct, setSelectedProduct] = useState({} as any);
-
 
   useEffect(() => {
     getStoreItems();
@@ -57,7 +55,12 @@ const Store: FunctionalComponent = () => {
       }))
       console.log('@@@@@  ~ file: index.tsx ~ line 59 ~ getStoreItems ~ products', products)
 
-      setProducts(products.flat() as any);
+      const productsAvailable = products
+        .flat()
+        .filter(obj => obj.stock_level_left > 0);
+      console.log('@@@@@  ~ file: index.tsx ~ line 61 ~ getStoreItems ~ productsAvailable', productsAvailable)
+
+      setProducts(productsAvailable as any);
     }
   };
 
@@ -76,6 +79,20 @@ const Store: FunctionalComponent = () => {
 
       if (data.status === 'Item successfully purchased.') {
         window.alert(`Purchase successful! The voucher has been sent to your email. Current balance: ${data?.bank_account?.balance_amount}`);
+
+        const getAccountRes = await fetch(`${ZLTO_API}/dl_account_details/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${token}`,
+            }
+        });
+        const accountData = await getAccountRes.json();
+        console.log('@@@@@  ~ file: index.tsx ~ line 42 ~ performAuth ~ accountData', accountData);
+
+        setZltoBalance(accountData.balance);
+      } else {
+        window.alert(data.status);
       }
     }
   };

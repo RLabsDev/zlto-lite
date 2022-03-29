@@ -78,7 +78,7 @@ const Earn: FunctionalComponent = () => {
             <div class={style.grid}>
                 {isLoading && (!taskInFocus || !taskInFocus.details) && <h3>Loading...</h3>}
 
-                {tasks.length === 0 && <h3>No tasks at the moment - please check with your Zlto partner for more information.</h3>}
+                {!isLoading && token !== '' && tasks.length === 0 && <h3>No tasks at the moment - please check with your Zlto partner for more information.</h3>}
 
                 {tasks.map(task => (
                     <div class={style.card} onClick={() => getTaskDetails(task)}>

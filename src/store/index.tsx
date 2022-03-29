@@ -16,6 +16,7 @@ interface TaskQuestion {
   question_number: number;
   choices: string;
 };
+
 interface Task {
   details: {
     id: number;
@@ -33,6 +34,7 @@ let { useStore } = createStore({
   taskInFocus: {} as Task,
   stores: [],
   products: [],
+  zltoBalance: 0
 });
 
 export {
