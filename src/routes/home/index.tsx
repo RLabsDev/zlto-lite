@@ -32,6 +32,12 @@ const Home: FunctionalComponent = () => {
         if (!!res) {
             const data = await res.json();
             console.log('@@@@@  ~ file: index.tsx ~ line 29 ~ session ~ data', data)
+
+            if (data[0]?.includes('failed')) {
+                window.alert(data[0]);
+                return;
+            }
+
             setToken(data.token);
 
             const getAccountRes = await fetch(`${ZLTO_API}/dl_account_details/`, {

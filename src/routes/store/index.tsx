@@ -92,7 +92,11 @@ const Store: FunctionalComponent = () => {
 
         setZltoBalance(accountData.balance);
       } else {
-        window.alert(data.status);
+        if (data.status === 'User cannot afford this') {
+          window.alert('You cannot afford this at the moment. Keep earning Zlto and come back soon!');
+        } else {
+          window.alert(data.status);
+        }
       }
     }
   };

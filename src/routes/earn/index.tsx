@@ -11,6 +11,7 @@ const Earn: FunctionalComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useStore.token();
     const [tasks, setTasks] = useStore.tasks();
+    console.log('@@@@@  ~ file: index.tsx ~ line 14 ~ tasks', tasks)
     const [taskInFocus, setTaskInFocus] = useStore.taskInFocus();
 
     // const survey = !!surveys ? surveys[2] : {} as any; // hardcoded for now, maybe new endpoint created to fetch one daily survey
@@ -24,7 +25,7 @@ const Earn: FunctionalComponent = () => {
         try {
             setIsLoading(true);
 
-    console.log('@@@@@  ~ file: index.tsx ~ line 13 ~ token', token)
+            console.log('@@@@@  ~ file: index.tsx ~ line 13 ~ token', token)
 
             const res = await fetch(`${ZLTO_API}/dl_get_tasks/`, {
                 headers: {

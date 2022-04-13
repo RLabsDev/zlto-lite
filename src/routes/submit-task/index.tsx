@@ -1,4 +1,5 @@
 import { FunctionalComponent, h, Fragment } from 'preact';
+import { route } from 'preact-router';
 import {  useState } from 'preact/hooks';
 import { useStore } from '../../store';
 import get from '../../utils/get';
@@ -55,7 +56,7 @@ const SubmitTask: FunctionalComponent = () => {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
         Authorization: `Token ${token}`,
       },
     });
@@ -99,10 +100,10 @@ const SubmitTask: FunctionalComponent = () => {
 
     console.log('@@@ res: ', res);
 
-    // if (_.every(res, obj => ['record updated', 'record saved'].includes(obj.message))) {
-    //   successfulSaveNotification();
-    //   navigate(routes.surveys.view)
-    // }
+    if (res.every(obj => ['record updated', 'record saved'].includes(obj.message))) {
+        window.alert('Survey completed!');
+        route('/earn');
+    }
   };
 
   return (
@@ -159,21 +160,24 @@ const SubmitTask: FunctionalComponent = () => {
                                   <div>
                                       {(obj.question_type_verbose === 'Open-ended' || (['Paragraph'].includes(obj.answer_type_verbose))) && (
                                           <input
-                                              onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
-                                              type="text"
-                                              placeholder={obj.title}
+                                                value={answers[obj.id]}
+                                                onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
+                                                type="text"
+                                                placeholder={obj.title}
                                           />
                                       )}
-                                      {(obj.question_type_verbose === 'Date') && (
+                                      {(obj.question_type_verbose === 'Date Field') && (
                                           <input
-                                              onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
-                                              type="text"
-                                              placeholder={obj.title}
+                                                value={answers[obj.id]}
+                                                onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
+                                                type="date"
+                                                placeholder={obj.title}
                                           />
                                       )}
                                       {obj.question_type_verbose === 'Multiple Choice' && (
                                           <div class={style.selectDropdown}>
                                             <select 
+                                                value={answers[obj.id]}
                                                 onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
                                                 required
                                             >
@@ -192,12 +196,21 @@ const SubmitTask: FunctionalComponent = () => {
                                           </button>
                                       )}
                                       {currentQuestion < questions.length - 1 && (
-                                          <button class={style.actionButton} onClick={() => next()}>
+                                          <button
+                                                class={style.actionButton}
+                                                onClick={() => {
+                                                    if (!answers[obj.id]) {
+                                                        window.alert('Your answer is empty');
+                                                        return;
+                                                    }
+                                                    next()
+                                                }}
+                                        >
                                               Next
                                           </button>
                                       )}
                                       {currentQuestion === questions.length - 1 && (
-                                          <input class={style.actionButton} onClick={onSurveyCompleted} type="submit" value="Done"/>
+                                          <input class={style.actionButton} onClick={onSurveyCompleted} type="submit" value="Submit"/>
                                       )}
                                   </div>
 
