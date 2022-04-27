@@ -101,8 +101,13 @@ const SubmitTask: FunctionalComponent = () => {
     console.log('@@@ res: ', res);
 
     if (res.every(obj => ['record updated', 'record saved'].includes(obj.message))) {
-        window.alert('Survey completed!');
-        route('/earn');
+        if (res.some(obj => ['Already got Credited'].includes(obj.credited))) {
+            window.alert('Already credited for this survey.');
+            route('/earn');
+        } else {
+            window.alert('Survey completed!');
+            route('/earn');
+        }
     }
   };
 
@@ -158,7 +163,7 @@ const SubmitTask: FunctionalComponent = () => {
                                       <Description />
                                   }
                                   <div>
-                                      {(obj.question_type_verbose === 'Open-ended' || (['Paragraph'].includes(obj.answer_type_verbose))) && (
+                                      {(['Open-ended', 'Short answer', 'Paragraph'].includes(obj.answer_type_verbose)) && (
                                           <input
                                                 value={answers[obj.id]}
                                                 onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }

@@ -75,6 +75,13 @@ const Home: FunctionalComponent = () => {
                 {' '}
                 Create account
             </a>
+
+            <a
+                class={style.createAccount}
+                onClick={() => route('reset-password')}
+            >
+                Forgot your password?
+            </a>
         </div>
     );
 };

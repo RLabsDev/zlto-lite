@@ -9,6 +9,8 @@ import SubmitTask from '../routes/submit-task';
 import Store from '../routes/store';
 import NotFoundPage from '../routes/notfound';
 import Header from './header';
+import ResetPassword from '../routes/reset-password';
+import VerifyResetPassword from '../routes/verify-reset-password';
 
 const App: FunctionalComponent = () => {
     return (
@@ -17,6 +19,8 @@ const App: FunctionalComponent = () => {
             <Router>
                 <Route path="/" component={Home} />
                 <Route path="/signup" component={Signup} />
+                <Route path="/reset-password" component={ResetPassword} />
+                <Route path="/verify_reset_password/:authKey" component={VerifyResetPassword} />
                 <Route path="/earn" component={Earn} />
                 <Route path="/submit-task" component={SubmitTask} />
                 <Route path="/store" component={Store} />
