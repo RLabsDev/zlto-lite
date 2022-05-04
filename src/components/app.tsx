@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { FunctionalComponent, h } from 'preact';
-import { Route, Router } from 'preact-router';
+import { Router, Route } from 'preact-router';
 
 import Home from '../routes/home';
 import Signup from '../routes/signup';

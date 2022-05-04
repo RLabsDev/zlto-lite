@@ -8,8 +8,19 @@ const VerifyResetPassword: FunctionalComponent = ({ authKey }) => {
     const ZLTO_API = 'https://api.zlto.co';
 
     const [newPassword, setNewPassword] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState(null);
 
     async function confirmNewPassword() {
+        if (newPassword !== confirmPassword) {
+            window.alert('Passwords do not match');
+            return;
+        }
+
+        if (newPassword === null || confirmPassword === null) {
+            window.alert('Both password fields required');
+            return;
+        }
+
         const res = await fetch(`${ZLTO_API}/dl_change_reset_password/`, {
             method: 'POST',
             body: JSON.stringify({
@@ -36,8 +47,11 @@ const VerifyResetPassword: FunctionalComponent = ({ authKey }) => {
     return (
         <div class={style.home}>
             <h1>Enter new password</h1>
-            <label for="fname">New Password</label>
-            <input onChange={e => setNewPassword(e.target.value)} type="text" id="newPassword" name="newPassword" placeholder="New password.."/>
+            <label for="password">New Password</label>
+            <input onChange={e => setNewPassword(e.target.value)} type="password" id="newPassword" name="newPassword" placeholder="New password.."/>
+
+            <label for="confirmPassword">Confirm Password</label>
+            <input onChange={e => setConfirmPassword(e.target.value)} type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password.."/>
 
             <input onClick={confirmNewPassword} type="submit" value="Reset"/>
         </div>
