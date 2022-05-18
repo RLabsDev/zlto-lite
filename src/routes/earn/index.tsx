@@ -83,9 +83,19 @@ const Earn: FunctionalComponent = () => {
 
                 {tasks.map(task => (
                     <div class={style.card} onClick={() => getTaskDetails(task)}>
-                        <img src={task.banner_pic} alt={task.title} style="width:100%"/>
+                        {/* <img src={task.banner_pic} alt={task.title} style="width:100%"/> */}
+                        {task.questionnaire_type_verbose === 'Learning Module' &&
+                            <div class={style.taskTypeEmoji}>
+                                📚 
+                            </div>
+                        }
+                        {task.questionnaire_type_verbose === 'Survey' &&
+                            <div class={style.taskTypeEmoji}>
+                                📋 
+                            </div>
+                        }
                         <div class={style.container}>
-                            <h4><b>{task.title}</b></h4>
+                            <h4 class={style.taskTitle}><b>{task.title}</b></h4>
                             <p>🎁 Reward: {task.amount} Zlto </p>
                         </div>
                     </div>

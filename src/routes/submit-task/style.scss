@@ -142,3 +142,15 @@
 	border-right: 5px solid transparent;
 	border-left: 5px solid transparent;
 }
+
+.questionContainer {
+  p, span {
+    font-family: Arial !important;
+    font-size: 15px !important;
+    text-align: left !important;
+  }
+}
+
+.answerContainer {
+  margin-top: 10px;
+}

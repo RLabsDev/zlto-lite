@@ -1,6 +1,6 @@
 import { FunctionalComponent, h, Fragment } from 'preact';
 import { route } from 'preact-router';
-import {  useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { useStore } from '../../store';
 import get from '../../utils/get';
 import orderBy from '../../utils/orderBy';
@@ -19,6 +19,12 @@ const SubmitTask: FunctionalComponent = () => {
   console.log('@@@@@  ~ file: index.tsx ~ line 16 ~ answers', answers)
 
   console.log('@@@@@  ~ file: index.tsx ~ line 17 ~ surveyInFocus', taskInFocus)
+
+  useEffect(() => {
+      if (!taskInFocus.questions) {
+        route('earn');
+      }
+  }, [])
 
   let questions = taskInFocus.questions.reverse();
   questions = orderBy(questions, 'question_number');
@@ -100,15 +106,26 @@ const SubmitTask: FunctionalComponent = () => {
 
     console.log('@@@ res: ', res);
 
-    if (res.every(obj => ['record updated', 'record saved'].includes(obj.message))) {
-        if (res.some(obj => ['Already got Credited'].includes(obj.credited))) {
-            window.alert('Already credited for this survey.');
-            route('/earn');
-        } else {
-            window.alert('Survey completed!');
-            route('/earn');
-        }
+    const incorrectResponseIds = res.filter(obj => !obj.is_correct).map(obj => obj.details.question);
+    console.log('@@@@@  ~ file: index.tsx ~ line 110 ~ onSurveyCompleted ~ incorrectResponseIds', incorrectResponseIds)
+
+    if (incorrectResponseIds.length > 0) {
+        const incorrectQuestions = taskInFocus.questions.filter(q => incorrectResponseIds.some(id => id === q.id))
+        console.log('@@@@@  ~ file: index.tsx ~ line 113 ~ onSurveyCompleted ~ incorrectQuestions', incorrectQuestions)
+
+        window.alert(`The following answers were incorrect: \n${incorrectQuestions.reverse().map(q => `${q.title}`).join('\n')}. \nPlease try again`)
+        route('/earn');
+        return;
     }
+
+    if (res.some(obj => ['Already got Credited'].includes(obj.credited))) {
+        window.alert('Already credited for this survey.');
+        route('/earn');
+        return;
+    }
+
+    window.alert('Survey completed!');
+    route('/earn');
   };
 
   return (
@@ -155,22 +172,21 @@ const SubmitTask: FunctionalComponent = () => {
                   return (
                       <Fragment>
                           {currentQuestion === idx &&
-                              <div>
+                              <div class={style.questionContainer}>
                                   <span class={style.questionTitle}>
                                       {idx + 1}: {obj.title}
                                   </span>
                                   {!!obj.description &&
                                       <Description />
                                   }
-                                  <div>
-                                      {(['Open-ended', 'Short answer', 'Paragraph'].includes(obj.answer_type_verbose)) && (
-                                          <input
-                                                value={answers[obj.id]}
-                                                onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
-                                                type="text"
-                                                placeholder={obj.title}
-                                          />
-                                      )}
+                                  {!!obj.question_attachments && !!obj.question_attachments.length &&
+                                      <Attachments />
+                                  }
+                                  <div class={style.answerContainer}>
+                                      <span>
+                                        Answer below:
+                                      </span>
+
                                       {(obj.question_type_verbose === 'Date Field') && (
                                           <input
                                                 value={answers[obj.id]}
@@ -179,10 +195,11 @@ const SubmitTask: FunctionalComponent = () => {
                                                 placeholder={obj.title}
                                           />
                                       )}
-                                      {obj.question_type_verbose === 'Multiple Choice' && (
+                                      {['Closed-ended', 'Multiple Choice'].includes(obj.question_type_verbose) && (
                                           <div class={style.selectDropdown}>
                                             <select 
-                                                value={answers[obj.id]}
+                                                value={!!answers[obj.id] ? answers[obj.id] : 'Please select an option'}
+                                                placeholder='Plase select an option'
                                                 onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
                                                 required
                                             >
@@ -191,6 +208,14 @@ const SubmitTask: FunctionalComponent = () => {
                                                 ))}
                                             </select>
                                           </div>
+                                      )}
+                                      {(['Open-ended', 'Short answer', 'Paragraph'].includes(obj.question_type_verbose)) && (
+                                          <input
+                                                value={answers[obj.id]}
+                                                onChange={e => setAnswers({...answers, [obj.id]: get(e, 'target.value', '')}) }
+                                                type="text"
+                                                placeholder={obj.title}
+                                          />
                                       )}
                                   </div>
 
@@ -204,7 +229,7 @@ const SubmitTask: FunctionalComponent = () => {
                                           <button
                                                 class={style.actionButton}
                                                 onClick={() => {
-                                                    if (!answers[obj.id]) {
+                                                    if (answers[obj.id] === undefined) {
                                                         window.alert('Your answer is empty');
                                                         return;
                                                     }
@@ -219,9 +244,6 @@ const SubmitTask: FunctionalComponent = () => {
                                       )}
                                   </div>
 
-                                  {!!obj.question_attachments && !!obj.question_attachments.length &&
-                                      <Attachments />
-                                  }
                               </div>
                           }
                       </Fragment>
