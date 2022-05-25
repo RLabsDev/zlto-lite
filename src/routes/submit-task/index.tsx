@@ -128,8 +128,18 @@ const SubmitTask: FunctionalComponent = () => {
     route('/earn');
   };
 
+  const percentCompleted = (currentQuestion + 1) / questionsToShow.length * 100;
+
   return (
       <div class={style.home}>
+            <div class={style.progressWrapper}>
+                <div class={style.progressBar}>
+                    <span class={style.progressBarFill} style={`width: ${percentCompleted}%`}></span>
+                </div>
+                <div class={style.progressQuestionNumber}>
+                    Question {currentQuestion + 1} / {questionsToShow.length}
+                </div>
+            </div>
           <h2 class={style.title}>{taskInFocus.details.title}</h2>
           <div class={style.grid}>
               {questionsToShow.map((obj, idx) => {
@@ -171,7 +181,7 @@ const SubmitTask: FunctionalComponent = () => {
 
                   return (
                       <Fragment>
-                          {currentQuestion === idx &&
+                            {currentQuestion === idx &&
                               <div class={style.questionContainer}>
                                   <span class={style.questionTitle}>
                                       {idx + 1}: {obj.title}
