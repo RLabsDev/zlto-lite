@@ -11,6 +11,7 @@ const ZLTO_API = 'https://api.zlto.co';
 const SubmitTask: FunctionalComponent = () => {
   const [token] = useStore.token();
   const [taskInFocus, setTaskInFocus] = useStore.taskInFocus();
+  const [zltoBalance, setZltoBalance] = useStore.zltoBalance();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   console.log('@@@@@  ~ file: index.tsx ~ line 15 ~ currentQuestion', currentQuestion)
 
@@ -78,7 +79,9 @@ const SubmitTask: FunctionalComponent = () => {
 
     const res = await Promise.all(
       questionIds.map(async (questionId) => {
-        const answer = answers[questionId];
+        let answer = answers[questionId];
+
+        answer = answer.replace(/(\r\n|\n|\r)/gm, "");
         console.log('@@@@@  ~ file: index.tsx ~ line 75 ~ questionIds.map ~ answer', answer)
 
         let payload = {
@@ -124,8 +127,23 @@ const SubmitTask: FunctionalComponent = () => {
         return;
     }
 
-    window.alert('Survey completed!');
+    window.alert('Congratulations you have successfully completed and earned Zlto');
+    await refreshZltoBalance();
     route('/earn');
+  };
+
+  async function refreshZltoBalance() {
+    const getAccountRes = await fetch(`${ZLTO_API}/dl_account_details/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token}`,
+        }
+    });
+    const accountData = await getAccountRes.json();
+    console.log('@@@@@  ~ file: index.tsx ~ line 42 ~ performAuth ~ accountData', accountData);
+
+    setZltoBalance(accountData.balance);
   };
 
   const percentCompleted = (currentQuestion + 1) / questionsToShow.length * 100;
