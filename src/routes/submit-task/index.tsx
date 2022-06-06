@@ -117,7 +117,10 @@ const SubmitTask: FunctionalComponent = () => {
         console.log('@@@@@  ~ file: index.tsx ~ line 113 ~ onSurveyCompleted ~ incorrectQuestions', incorrectQuestions)
 
         window.alert(`The following answers were incorrect: \n${incorrectQuestions.reverse().map(q => `${q.title}`).join('\n')}. \nPlease try again`)
-        route('/earn');
+
+        // Reset state so user starts from initial question
+        setCurrentQuestion(0);
+        setAnswers({});
         return;
     }
 
@@ -127,7 +130,7 @@ const SubmitTask: FunctionalComponent = () => {
         return;
     }
 
-    window.alert('Congratulations you have successfully completed and earned Zlto');
+    window.alert('Congratulations you have successfully completed this activity and earned Zlto');
     await refreshZltoBalance();
     route('/earn');
   };
