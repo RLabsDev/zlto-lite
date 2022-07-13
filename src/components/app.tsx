@@ -11,6 +11,10 @@ import NotFoundPage from '../routes/notfound';
 import Header from './header';
 import ResetPassword from '../routes/reset-password';
 import VerifyResetPassword from '../routes/verify-reset-password';
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("INSERT GA ID");
+ReactGA.send(window.location.pathname);
 
 const App: FunctionalComponent = () => {
     return (
