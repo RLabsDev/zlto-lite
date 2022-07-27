@@ -1,7 +1,6 @@
 import { FunctionalComponent, h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { useStore } from '../../store';
-import get from '../../utils/get';
 import ProductCard from './ProductCard';
 import style from './style.scss';
 

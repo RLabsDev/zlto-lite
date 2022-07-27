@@ -38,8 +38,11 @@ const Header: FunctionalComponent = () => {
                         <Link activeClassName={style.active} href="/store">
                             🎁 Prizes
                         </Link>
-                        <Link activeClassName={style.active} href="/" onClick={() => setToken('')}>
+                        {/* <Link activeClassName={style.active} href="/" onClick={() => setToken('')}>
                             👋🏽 Logout
+                        </Link> */}
+                        <Link activeClassName={style.active} href="/profile">
+                            🧑‍🎓 Profile
                         </Link>
                     </div>
                 )

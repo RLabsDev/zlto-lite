@@ -2,13 +2,14 @@
 import { FunctionalComponent, h } from 'preact';
 import style from './style.css';
 import { route } from 'preact-router';
-import { useState, useEffect } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { useStore } from '../../store';
 
 const Home: FunctionalComponent = () => {
     const ZLTO_API = 'https://api.zlto.co';
 
     const [token, setToken] = useStore.token();
+    const [user, setUser] = useStore.user();
     const [zltoBalance, setZltoBalance] = useStore.zltoBalance();
 
     const [username, setUsername] = useState(null);
@@ -38,19 +39,20 @@ const Home: FunctionalComponent = () => {
                 return;
             }
 
+            setUser(data.account);
             setToken(data.token);
 
-            const getAccountRes = await fetch(`${ZLTO_API}/dl_account_details/`, {
+            const getAccountDetailsRes = await fetch(`${ZLTO_API}/dl_account_details/`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Token ${data.token}`,
                 }
             });
-            const accountData = await getAccountRes.json();
-            console.log('@@@@@  ~ file: index.tsx ~ line 42 ~ performAuth ~ accountData', accountData);
+            const details = await getAccountDetailsRes.json();
+            console.log('@@@@@  ~ file: index.tsx ~ line 53 ~ performAuth ~ details', details)
 
-            setZltoBalance(accountData.balance);
+            setZltoBalance(details.balance);
 
             route('earn');
         }

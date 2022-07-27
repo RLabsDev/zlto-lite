@@ -28,8 +28,19 @@ interface Task {
   questions: TaskQuestion[];
 };
 
+interface User {
+  name: string;
+  surname: string;
+  id: string;
+  cell_number: string;
+  email: string;
+  dob: string;
+  about_me: string;
+};
+
 let { useStore } = createStore({
   token: '',
+  user: {} as User,
   tasks: [] as any,
   taskInFocus: {} as Task,
   stores: [],
