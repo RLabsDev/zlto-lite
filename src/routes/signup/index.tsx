@@ -32,7 +32,7 @@ const Signup: FunctionalComponent = () => {
     if (!!res) {
       const data = await res.json();
       console.log("@@@@@  ~ file: index.tsx ~ line 29 ~ session ~ data", data);
-      setToken(data.access_token);
+      setToken(data.token);
       route("earn");
     }
   }
