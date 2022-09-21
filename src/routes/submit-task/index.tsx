@@ -175,7 +175,7 @@ const SubmitTask: FunctionalComponent = () => {
       accountData
     );
 
-    setZltoBalance(accountData.balance);
+    setZltoBalance(accountData.zlto_balance?.balance);
   }
 
   const percentCompleted =
