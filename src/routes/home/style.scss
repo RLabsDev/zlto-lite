@@ -54,6 +54,7 @@ input[type=submit]:hover {
   pointer-events: none;
 }
 .modalDialog:target {
+  overflow-y: scroll;
   opacity:1;
   pointer-events: auto;
 }
